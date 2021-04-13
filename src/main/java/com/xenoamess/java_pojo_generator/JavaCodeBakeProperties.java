@@ -2,8 +2,8 @@ package com.xenoamess.java_pojo_generator;
 
 public class JavaCodeBakeProperties {
 
-    private String outputFolder = "";
-    private String packageName = "";
+    private String outputFolder = "./output";
+    private String packageName = "generated.demo";
     private boolean ifBeautify = true;
     private boolean ifLombok = true;
     private boolean ifMongoDb = true;

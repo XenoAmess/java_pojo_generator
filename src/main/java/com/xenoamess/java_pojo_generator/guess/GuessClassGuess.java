@@ -6,24 +6,13 @@ import java.util.Map;
 /**
  * @author XenoAmess
  */
-public class GuessClassGuess extends AbstractClassGuess{
-
-    private String packageName;
-
+public class GuessClassGuess extends AbstractClassGuess {
     private String className;
 
-    private Map<String,FieldGuess> fields = new LinkedHashMap<>();
+    private Map<String, FieldGuess> fields = new LinkedHashMap<>();
 
     public GuessClassGuess(ClassGuessManager classGuessManager) {
         super(classGuessManager);
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
     }
 
     public String getClassName() {
@@ -34,11 +23,11 @@ public class GuessClassGuess extends AbstractClassGuess{
         this.className = className;
     }
 
-    public Map<String,FieldGuess> getFields() {
+    public Map<String, FieldGuess> getFields() {
         return fields;
     }
 
-    public void setFields(Map<String,FieldGuess> fields) {
+    public void setFields(Map<String, FieldGuess> fields) {
         this.fields = fields;
     }
 }

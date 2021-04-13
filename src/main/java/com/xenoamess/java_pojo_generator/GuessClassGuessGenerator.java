@@ -9,10 +9,9 @@ import com.xenoamess.java_pojo_generator.guess.ListClassGuess;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import static com.xenoamess.java_pojo_generator.util.FindJavaClassCommonParentUtil.commonSuperclasses;
+import static com.xenoamess.java_pojo_generator.util.FindJavaClassCommonParentUtil.lowestCommonSuperclasses;
 
 /**
  * @author XenoAmess
@@ -112,7 +111,7 @@ public class GuessClassGuessGenerator {
         if (abstractClassGuess1 instanceof JavaClassGuess && abstractClassGuess2 instanceof JavaClassGuess) {
             JavaClassGuess javaClassGuess1 = (JavaClassGuess) abstractClassGuess1;
             JavaClassGuess javaClassGuess2 = (JavaClassGuess) abstractClassGuess2;
-            Set<Class> classes = commonSuperclasses(
+            Collection<Class> classes = lowestCommonSuperclasses(
                     Arrays.asList(
                             javaClassGuess1.getRealClass(),
                             javaClassGuess2.getRealClass()

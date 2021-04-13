@@ -16,9 +16,10 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  *
- * @author Cephalopod
- * @link https://stackoverflow.com/questions/9797212/finding-the-nearest-common-superclass-or-superinterface-of-a
+ * https://stackoverflow.com/questions/9797212/finding-the-nearest-common-superclass-or-superinterface-of-a
  * -collection-of-cla
+ *
+ * @author Cephalopod
  */
 public class FindJavaClassCommonParentUtil {
     @NotNull
@@ -27,7 +28,8 @@ public class FindJavaClassCommonParentUtil {
         final Queue<Class> queue = new ArrayDeque<>();
         queue.add(clazz);
         if (clazz.isInterface()) {
-            queue.add(Object.class); // optional
+            // optional
+            queue.add(Object.class);
         }
         while (!queue.isEmpty()) {
             Class c = queue.remove();
