@@ -1,21 +1,23 @@
 package com.xenoamess.java_pojo_generator;
 
-import com.xenoamess.java_pojo_generator.guess.AbstractClassGuess;
-import com.xenoamess.java_pojo_generator.guess.FieldGuess;
-import com.xenoamess.java_pojo_generator.guess.GuessClassGuess;
-import com.xenoamess.java_pojo_generator.guess.JavaClassGuess;
-import com.xenoamess.java_pojo_generator.guess.ListClassGuess;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+
+import com.xenoamess.java_pojo_generator.guess.AbstractClassGuess;
+import com.xenoamess.java_pojo_generator.guess.FieldGuess;
+import com.xenoamess.java_pojo_generator.guess.GuessClassGuess;
+import com.xenoamess.java_pojo_generator.guess.JavaClassGuess;
+import com.xenoamess.java_pojo_generator.guess.ListClassGuess;
+import com.xenoamess.java_pojo_generator.util.CaseUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.CaseUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,39 +49,87 @@ public class JavaFilesBaker {
             @NotNull JavaCodeBakeProperties javaCodeBakeProperties,
             @NotNull Set<String> completedClasses
     ) {
-        String className = this.getClassName(givenClassName, guessClassGuess, javaCodeBakeProperties);
+        LinkedHashSet<String> imports = new LinkedHashSet<>();
+
+        String className = this.getClassName(
+                givenClassName,
+                guessClassGuess,
+                javaCodeBakeProperties,
+                imports
+        );
+
 
         if (completedClasses.contains(className)) {
             return;
         }
 
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("package ");
-        stringBuilder.append(javaCodeBakeProperties.getPackageName());
-        stringBuilder.append(";\n\n");
+        StringBuilder stringBuilderBody = new StringBuilder();
 
         if (javaCodeBakeProperties.isIfLombok()) {
-            stringBuilder.append("@lombok.Generated\n");
-            stringBuilder.append("@lombok.Data\n");
+            if (javaCodeBakeProperties.isIfMarkLombokGenerated()) {
+                stringBuilderBody
+                        .append("@")
+                        .append(
+                                registerClassName(
+                                        "lombok.Generated",
+                                        javaCodeBakeProperties,
+                                        imports
+                                )
+                        )
+                        .append("\n");
+            }
+            stringBuilderBody
+                    .append("@")
+                    .append(
+                            registerClassName(
+                                    "lombok.Data",
+                                    javaCodeBakeProperties,
+                                    imports
+                            )
+                    )
+                    .append("\n");
         }
-        if (javaCodeBakeProperties.isIfSpringData() && javaCodeBakeProperties.isIfMongoDb()) {
-            stringBuilder.append("@org.springframework.data.mongodb.core.mapping.Document\n");
+
+        if (guessClassGuess.getCurrentIndex() == 0) {
+            if (javaCodeBakeProperties.isIfSpringData() && javaCodeBakeProperties.isIfMongoDb()) {
+                stringBuilderBody
+                        .append("@")
+                        .append(
+                                registerClassName(
+                                        "org.springframework.data.mongodb.core.mapping.Document",
+                                        javaCodeBakeProperties,
+                                        imports
+                                )
+                        )
+                        .append("(\"")
+                        .append(givenClassName)
+                        .append("\")\n");
+            }
         }
 
         // class header line
-        stringBuilder.append("public class ");
-        stringBuilder.append(className);
-        stringBuilder.append(" {\n");
+        stringBuilderBody.append("public class ");
+        stringBuilderBody.append(className);
+        stringBuilderBody.append(" {\n");
 
         Map<String, GuessClassGuess> nexts = new LinkedHashMap<>();
 
         for (FieldGuess fieldGuess : guessClassGuess.getFields().values()) {
-            stringBuilder.append("\n");
+            stringBuilderBody.append("\n");
 
             String fieldName = this.getFieldName(fieldGuess, javaCodeBakeProperties);
             if (javaCodeBakeProperties.isIfSpringData()) {
-                stringBuilder
-                        .append("@org.springframework.data.mongodb.core.mapping.Field(\"")
+                stringBuilderBody
+                        .append("    ")
+                        .append("@")
+                        .append(
+                                registerClassName(
+                                        "org.springframework.data.mongodb.core.mapping.Field",
+                                        javaCodeBakeProperties,
+                                        imports
+                                )
+                        )
+                        .append("(\"")
                         .append(fieldGuess.getFiledName())
                         .append("\")\n");
             }
@@ -88,13 +138,34 @@ public class JavaFilesBaker {
                 if (fieldClass instanceof JavaClassGuess) {
                     Class clazz = ((JavaClassGuess<?>) fieldClass).getRealClass();
                     if (StringUtils.equals(clazz.getCanonicalName(), "org.bson.types.ObjectId")) {
-                        stringBuilder.append("@org.springframework.data.annotation.Id\n");
+                        stringBuilderBody
+                                .append("    ")
+                                .append("@")
+                                .append(
+                                        registerClassName(
+                                                "org.springframework.data.annotation.Id",
+                                                javaCodeBakeProperties,
+                                                imports
+                                        )
+                                )
+                                .append("\n");
                     }
                 }
             }
-            stringBuilder
+            stringBuilderBody
+                    .append("    ")
                     .append("private ")
-                    .append(getFieldClassName(fieldGuess, javaCodeBakeProperties))
+                    .append(
+                            registerClassName(
+                                    getFieldClassName(
+                                            fieldGuess,
+                                            javaCodeBakeProperties,
+                                            imports
+                                    ),
+                                    javaCodeBakeProperties,
+                                    imports
+                            )
+                    )
                     .append(" ")
                     .append(fieldName)
                     .append(";\n");
@@ -114,14 +185,34 @@ public class JavaFilesBaker {
             }
         }
 
-        stringBuilder
+        stringBuilderBody
                 .append("}")
                 .append('\n');
+
+        StringBuilder stringBuilderFull = new StringBuilder();
+
+        stringBuilderFull.append("package ");
+        stringBuilderFull.append(javaCodeBakeProperties.getPackageName());
+        stringBuilderFull.append(";\n\n");
+
+        if (javaCodeBakeProperties.isIfUsingImports()) {
+            for (String importedClass : imports) {
+                if (importedClass.split("\\.").length != 1) {
+                    stringBuilderFull
+                            .append("import ")
+                            .append(importedClass)
+                            .append(";\n");
+                }
+            }
+            stringBuilderFull.append("\n");
+        }
+
+        stringBuilderFull.append(stringBuilderBody);
 
         try {
             FileUtils.writeStringToFile(
                     new File(realFolder + "/" + className + ".java"),
-                    stringBuilder.toString(),
+                    stringBuilderFull.toString(),
                     StandardCharsets.UTF_8
             );
         } catch (IOException e) {
@@ -145,18 +236,29 @@ public class JavaFilesBaker {
     @NotNull
     private String getClassName(
             @Nullable String givenClassName,
-            @NotNull AbstractClassGuess classGuess,
-            @NotNull JavaCodeBakeProperties javaCodeBakeProperties) {
+            @Nullable AbstractClassGuess classGuess,
+            @NotNull JavaCodeBakeProperties javaCodeBakeProperties,
+            @NotNull LinkedHashSet<String> imports
+    ) {
+
+        if (classGuess == null) {
+            return "java.lang.Void";
+        }
 
         if (classGuess instanceof ListClassGuess) {
 
             AbstractClassGuess childClassGuess = ((ListClassGuess) classGuess).getKeyClassGuess();
             return ((JavaClassGuess<?>) classGuess).getRealClass().getCanonicalName()
                     + "<" +
-                    getClassName(
-                            null,
-                            childClassGuess,
-                            javaCodeBakeProperties
+                    registerClassName(
+                            getClassName(
+                                    null,
+                                    childClassGuess,
+                                    javaCodeBakeProperties,
+                                    imports
+                            ),
+                            javaCodeBakeProperties,
+                            imports
                     )
                     + ">";
         }
@@ -209,16 +311,21 @@ public class JavaFilesBaker {
     @NotNull
     private String getFieldClassName(
             @NotNull FieldGuess fieldGuess,
-            @NotNull JavaCodeBakeProperties javaCodeBakeProperties
+            @NotNull JavaCodeBakeProperties javaCodeBakeProperties,
+            @NotNull LinkedHashSet<String> imports
     ) {
         AbstractClassGuess classGuess = fieldGuess.getFieldClass();
 
+        if (classGuess == null) {
+            return getClassName(null, classGuess, javaCodeBakeProperties, imports);
+        }
+
         if (classGuess instanceof ListClassGuess) {
-            return getClassName(null, classGuess, javaCodeBakeProperties);
+            return getClassName(null, classGuess, javaCodeBakeProperties, imports);
         }
 
         if (classGuess instanceof JavaClassGuess) {
-            return getClassName(null, classGuess, javaCodeBakeProperties);
+            return getClassName(null, classGuess, javaCodeBakeProperties, imports);
         }
 
         if (classGuess instanceof GuessClassGuess) {
@@ -227,7 +334,8 @@ public class JavaFilesBaker {
                     + getClassName(
                     fieldGuess.getFiledName(),
                     (GuessClassGuess) classGuess,
-                    javaCodeBakeProperties
+                    javaCodeBakeProperties,
+                    imports
             );
         }
 
@@ -250,6 +358,25 @@ public class JavaFilesBaker {
             throw new NotImplementedException(
                     "sorry but lombok is really needed in this version... " +
                             "It will be optional in future, I promise.");
+        }
+    }
+
+    @NotNull
+    protected String registerClassName(
+            @NotNull String fullClassName,
+            @NotNull JavaCodeBakeProperties javaCodeBakeProperties,
+            @NotNull LinkedHashSet<String> imports
+    ) {
+        String registeredClassName = fullClassName;
+        if (fullClassName.contains("<")) {
+            registeredClassName = fullClassName.split("<")[0];
+        }
+        imports.add(registeredClassName);
+        if (!javaCodeBakeProperties.isIfUsingImports()) {
+            return fullClassName;
+        } else {
+            String[] segs = fullClassName.split("\\.");
+            return segs[segs.length - 1];
         }
     }
 }

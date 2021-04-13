@@ -1,16 +1,18 @@
 package com.xenoamess.java_pojo_generator;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+
 import com.xenoamess.java_pojo_generator.guess.AbstractClassGuess;
 import com.xenoamess.java_pojo_generator.guess.ClassGuessManager;
 import com.xenoamess.java_pojo_generator.guess.FieldGuess;
 import com.xenoamess.java_pojo_generator.guess.GuessClassGuess;
 import com.xenoamess.java_pojo_generator.guess.JavaClassGuess;
 import com.xenoamess.java_pojo_generator.guess.ListClassGuess;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import static com.xenoamess.java_pojo_generator.util.FindJavaClassCommonParentUtil.lowestCommonSuperclasses;
 
 /**
@@ -50,7 +52,14 @@ public class GuessClassGuessGenerator {
         return res;
     }
 
-    private AbstractClassGuess getClassGuess(ClassGuessManager classGuessManager, Object object) {
+    @Nullable
+    private AbstractClassGuess getClassGuess(
+            @NotNull ClassGuessManager classGuessManager,
+            @Nullable Object object
+    ) {
+        if (object == null) {
+            return null;
+        }
         AbstractClassGuess newClassGuess;
         if (object instanceof Map) {
             newClassGuess = continueTheGuessOfMap(
@@ -100,26 +109,40 @@ public class GuessClassGuessGenerator {
         );
     }
 
+    @Nullable
     private AbstractClassGuess merge(
             @NotNull ClassGuessManager classGuessManager,
             @Nullable AbstractClassGuess abstractClassGuess1,
-            @NotNull AbstractClassGuess abstractClassGuess2
+            @Nullable AbstractClassGuess abstractClassGuess2
     ) {
         if (abstractClassGuess1 == null) {
             return abstractClassGuess2;
         }
-        if (abstractClassGuess1 instanceof JavaClassGuess && abstractClassGuess2 instanceof JavaClassGuess) {
-            JavaClassGuess javaClassGuess1 = (JavaClassGuess) abstractClassGuess1;
-            JavaClassGuess javaClassGuess2 = (JavaClassGuess) abstractClassGuess2;
-            Collection<Class> classes = lowestCommonSuperclasses(
-                    Arrays.asList(
-                            javaClassGuess1.getRealClass(),
-                            javaClassGuess2.getRealClass()
-                    )
-            );
-            Class newClass = classes.iterator().next();
-            ((JavaClassGuess) abstractClassGuess1).setRealClass(newClass);
+        if (abstractClassGuess2 == null) {
             return abstractClassGuess1;
+        }
+        if (abstractClassGuess1 instanceof JavaClassGuess && abstractClassGuess2 instanceof JavaClassGuess) {
+            if (abstractClassGuess1 instanceof ListClassGuess && abstractClassGuess2 instanceof ListClassGuess) {
+                ((ListClassGuess) abstractClassGuess1).setKeyClassGuess(
+                        merge(
+                                classGuessManager,
+                                ((ListClassGuess) abstractClassGuess1).getKeyClassGuess(),
+                                ((ListClassGuess) abstractClassGuess2).getKeyClassGuess()
+                        )
+                );
+                return abstractClassGuess1;
+            } else {
+                JavaClassGuess javaClassGuess1 = (JavaClassGuess) abstractClassGuess1;
+                JavaClassGuess javaClassGuess2 = (JavaClassGuess) abstractClassGuess2;
+                Collection<Class> classes = lowestCommonSuperclasses(
+                        Arrays.asList(
+                                javaClassGuess1.getRealClass(),
+                                javaClassGuess2.getRealClass()
+                        )
+                );
+                Class newClass = classes.iterator().next();
+                return new JavaClassGuess(classGuessManager, newClass);
+            }
         } else if (abstractClassGuess1 instanceof GuessClassGuess && abstractClassGuess2 instanceof GuessClassGuess) {
             GuessClassGuess guessClassGuess1 = (GuessClassGuess) abstractClassGuess1;
             GuessClassGuess guessClassGuess2 = (GuessClassGuess) abstractClassGuess2;

@@ -1,13 +1,14 @@
 package com.xenoamess.java_pojo_generator;
 
 public class JavaCodeBakeProperties {
-
     private String outputFolder = "./output";
     private String packageName = "generated.demo";
     private boolean ifBeautify = true;
     private boolean ifLombok = true;
+    private boolean ifMarkLombokGenerated = true;
     private boolean ifMongoDb = true;
     private boolean ifSpringData = true;
+    private boolean ifUsingImports = false;
 
     public JavaCodeBakeProperties() {
     }
@@ -15,22 +16,6 @@ public class JavaCodeBakeProperties {
     public JavaCodeBakeProperties(String outputFolder, String packageName) {
         this.outputFolder = outputFolder;
         this.packageName = packageName;
-    }
-
-    public JavaCodeBakeProperties(
-            String outputFolder,
-            String packageName,
-            boolean ifBeautify,
-            boolean ifLombok,
-            boolean ifMongoDb,
-            boolean ifSpringData
-    ) {
-        this.outputFolder = outputFolder;
-        this.packageName = packageName;
-        this.ifBeautify = ifBeautify;
-        this.ifLombok = ifLombok;
-        this.ifMongoDb = ifMongoDb;
-        this.ifSpringData = ifSpringData;
     }
 
     public String getOutputFolder() {
@@ -79,5 +64,21 @@ public class JavaCodeBakeProperties {
 
     public void setIfSpringData(boolean ifSpringData) {
         this.ifSpringData = ifSpringData;
+    }
+
+    public boolean isIfUsingImports() {
+        return ifUsingImports;
+    }
+
+    public void setIfUsingImports(boolean ifUsingImports) {
+        this.ifUsingImports = ifUsingImports;
+    }
+
+    public boolean isIfMarkLombokGenerated() {
+        return ifMarkLombokGenerated;
+    }
+
+    public void setIfMarkLombokGenerated(boolean ifMarkLombokGenerated) {
+        this.ifMarkLombokGenerated = ifMarkLombokGenerated;
     }
 }

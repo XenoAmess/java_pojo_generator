@@ -17,10 +17,10 @@ public class ClassGuessManager {
     }
 
     public GuessClassGuess buildGuess() {
-        GuessClassGuess res = new GuessClassGuess(this);
+
         final int currentIndex = count.getAndIncrement();
         final String resClassName = (currentIndex == 0 ? className : className + currentIndex);
-        res.setClassName(resClassName);
+        GuessClassGuess res = new GuessClassGuess(this, resClassName, currentIndex);
         classGuesses.add(res);
         return res;
     }
