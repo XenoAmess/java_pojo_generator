@@ -78,7 +78,10 @@ public class JavaFilesBaker {
 
             String fieldName = this.getFieldName(fieldGuess, javaCodeBakeProperties);
             if (javaCodeBakeProperties.isIfSpringData()) {
-                stringBuilder.append("@org.springframework.data.mongodb.core.mapping.Field\n");
+                stringBuilder
+                        .append("@org.springframework.data.mongodb.core.mapping.Field(\"")
+                        .append(fieldGuess.getFiledName())
+                        .append("\")\n");
             }
             AbstractClassGuess fieldClass = fieldGuess.getFieldClass();
             if (javaCodeBakeProperties.isIfSpringData() && javaCodeBakeProperties.isIfMongoDb()) {
