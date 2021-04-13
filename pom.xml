@@ -8,8 +8,7 @@
     <version>0.2.0</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <description>pojo generator for java, from HashMaps, like mongoDb
-        Document.
+    <description>pojo generator for java, from HashMaps, like mongoDb Document.
     </description>
     <url>https://github.com/XenoAmess/java_pojo_generator</url>
     <licenses>
