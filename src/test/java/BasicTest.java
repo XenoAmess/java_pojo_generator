@@ -1,11 +1,10 @@
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.xenoamess.java_pojo_generator.GuessClassGuessGenerator;
 import com.xenoamess.java_pojo_generator.JavaCodeBakeProperties;
 import com.xenoamess.java_pojo_generator.JavaFilesBaker;
 import com.xenoamess.java_pojo_generator.guess.GuessClassGuess;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.annotation.Id;
@@ -22,6 +21,7 @@ public class BasicTest {
         Map<String, Object> hashMap = new HashMap<>();
         hashMap.put("a_a", "a_a");
         hashMap.put("i", new ObjectId());
+        hashMap.put("_id", "idid");
         hashMap.put("b_b", 1);
         hashMap.put("c_c", 'c');
         hashMap.put("d_d", 2L);

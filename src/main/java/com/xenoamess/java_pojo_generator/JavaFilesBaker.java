@@ -1,5 +1,11 @@
 package com.xenoamess.java_pojo_generator;
 
+import com.xenoamess.java_pojo_generator.guess.AbstractClassGuess;
+import com.xenoamess.java_pojo_generator.guess.FieldGuess;
+import com.xenoamess.java_pojo_generator.guess.GuessClassGuess;
+import com.xenoamess.java_pojo_generator.guess.JavaClassGuess;
+import com.xenoamess.java_pojo_generator.guess.ListClassGuess;
+import com.xenoamess.java_pojo_generator.util.CaseUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -8,13 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
-import com.xenoamess.java_pojo_generator.guess.AbstractClassGuess;
-import com.xenoamess.java_pojo_generator.guess.FieldGuess;
-import com.xenoamess.java_pojo_generator.guess.GuessClassGuess;
-import com.xenoamess.java_pojo_generator.guess.JavaClassGuess;
-import com.xenoamess.java_pojo_generator.guess.ListClassGuess;
-import com.xenoamess.java_pojo_generator.util.CaseUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
@@ -135,21 +134,18 @@ public class JavaFilesBaker {
             }
             AbstractClassGuess fieldClass = fieldGuess.getFieldClass();
             if (javaCodeBakeProperties.isIfSpringData() && javaCodeBakeProperties.isIfMongoDb()) {
-                if (fieldClass instanceof JavaClassGuess) {
-                    Class clazz = ((JavaClassGuess<?>) fieldClass).getRealClass();
-                    if (StringUtils.equals(clazz.getCanonicalName(), "org.bson.types.ObjectId")) {
-                        stringBuilderBody
-                                .append("    ")
-                                .append("@")
-                                .append(
-                                        registerClassName(
-                                                "org.springframework.data.annotation.Id",
-                                                javaCodeBakeProperties,
-                                                imports
-                                        )
-                                )
-                                .append("\n");
-                    }
+                if (StringUtils.equals("_id", fieldGuess.getFiledName())) {
+                    stringBuilderBody
+                            .append("    ")
+                            .append("@")
+                            .append(
+                                    registerClassName(
+                                            "org.springframework.data.annotation.Id",
+                                            javaCodeBakeProperties,
+                                            imports
+                                    )
+                            )
+                            .append("\n");
                 }
             }
             stringBuilderBody
