@@ -2,7 +2,6 @@ package com.xenoamess.java_pojo_generator.guess;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.jetbrains.annotations.NotNull;
 
 /**

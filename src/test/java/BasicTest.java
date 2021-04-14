@@ -1,11 +1,11 @@
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.xenoamess.java_pojo_generator.GuessClassGuessGenerator;
 import com.xenoamess.java_pojo_generator.JavaCodeBakeProperties;
 import com.xenoamess.java_pojo_generator.JavaFilesBaker;
 import com.xenoamess.java_pojo_generator.guess.GuessClassGuess;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.annotation.Id;
@@ -22,6 +22,7 @@ public class BasicTest {
         Map<String, Object> hashMap = new HashMap<>();
         hashMap.put("a_a", "a_a");
         hashMap.put("i", new ObjectId());
+        hashMap.put("_id", "idId");
         hashMap.put("b_b", 1);
         hashMap.put("c_c", 'c');
         hashMap.put("d_d", 2L);
@@ -34,8 +35,8 @@ public class BasicTest {
         hashMap.put("e_e", hashMap2);
         hashMap.put("f_f", Arrays.asList(hashMap2, hashMap2));
         GuessClassGuess generatedClass = new GuessClassGuessGenerator().generate(
-                "kohar",
-                Arrays.asList(hashMap)
+                "table_name",
+                Collections.singletonList(hashMap)
         );
 
         JavaCodeBakeProperties properties = new JavaCodeBakeProperties();
@@ -58,7 +59,7 @@ public class BasicTest {
         properties.setPackageName("demo3");
 
         GuessClassGuess generatedClass2 = new GuessClassGuessGenerator().generate(
-                "kohar2",
+                "table_name2",
                 Arrays.asList(hashMap, hashMap2)
         );
 
