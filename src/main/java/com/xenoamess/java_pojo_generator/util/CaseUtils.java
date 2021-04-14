@@ -18,7 +18,6 @@ package com.xenoamess.java_pojo_generator.util;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -86,7 +85,7 @@ public class CaseUtils {
         if (capitalizeFirstLetter) {
             capitalizeNext = true;
         }
-        for (int index = 0; index < strLen;) {
+        for (int index = 0; index < strLen; ) {
             final int codePoint = str.codePointAt(index);
 
             if (delimiterSet.contains(codePoint)) {

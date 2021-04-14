@@ -111,7 +111,7 @@ public class JavaFilesBaker {
         stringBuilderBody.append(className);
         stringBuilderBody.append(" {\n");
 
-        Map<String, GuessClassGuess> nexts = new LinkedHashMap<>();
+        Map<String, GuessClassGuess> nextGuessClassGuesses = new LinkedHashMap<>();
 
         for (FieldGuess fieldGuess : guessClassGuess.getFields().values()) {
             stringBuilderBody.append("\n");
@@ -169,7 +169,7 @@ public class JavaFilesBaker {
             if (fieldClass instanceof ListClassGuess) {
                 AbstractClassGuess childClassGuess = ((ListClassGuess) fieldClass).getKeyClassGuess();
                 if (childClassGuess instanceof GuessClassGuess) {
-                    nexts.put(
+                    nextGuessClassGuesses.put(
                             ((GuessClassGuess) childClassGuess).getClassName(),
                             (GuessClassGuess) childClassGuess
                     );
@@ -177,7 +177,7 @@ public class JavaFilesBaker {
             }
 
             if (fieldClass instanceof GuessClassGuess) {
-                nexts.put(fieldName, (GuessClassGuess) fieldClass);
+                nextGuessClassGuesses.put(fieldName, (GuessClassGuess) fieldClass);
             }
         }
 
@@ -217,7 +217,7 @@ public class JavaFilesBaker {
 
         completedClasses.add(className);
 
-        for (Map.Entry<String, GuessClassGuess> entry : nexts.entrySet()) {
+        for (Map.Entry<String, GuessClassGuess> entry : nextGuessClassGuesses.entrySet()) {
             bake(
                     entry.getKey(),
                     entry.getValue(),
@@ -329,7 +329,7 @@ public class JavaFilesBaker {
                     + "."
                     + getClassName(
                     fieldGuess.getFiledName(),
-                    (GuessClassGuess) classGuess,
+                    classGuess,
                     javaCodeBakeProperties,
                     imports
             );
@@ -340,9 +340,9 @@ public class JavaFilesBaker {
 
     @NotNull
     private String getRealOutputFolder(@NotNull JavaCodeBakeProperties javaCodeBakeProperties) {
-        String[] segs = javaCodeBakeProperties.getPackageName().split("\\.");
+        String[] split = javaCodeBakeProperties.getPackageName().split("\\.");
         StringBuilder stringBuilder = new StringBuilder(javaCodeBakeProperties.getOutputFolder());
-        for (String seg : segs) {
+        for (String seg : split) {
             stringBuilder.append('/');
             stringBuilder.append(seg);
         }
@@ -371,8 +371,8 @@ public class JavaFilesBaker {
         if (!javaCodeBakeProperties.isIfUsingImports()) {
             return fullClassName;
         } else {
-            String[] segs = fullClassName.split("\\.");
-            return segs[segs.length - 1];
+            String[] split = fullClassName.split("\\.");
+            return split[split.length - 1];
         }
     }
 }

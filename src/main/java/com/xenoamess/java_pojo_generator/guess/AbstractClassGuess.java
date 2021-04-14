@@ -23,7 +23,7 @@ public abstract class AbstractClassGuess {
         this.classGuessManager = classGuessManager;
     }
 
-    public void die(){
+    public void die() {
         this.classGuessManager.kill(this);
     }
 }

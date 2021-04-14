@@ -1,18 +1,16 @@
 package com.xenoamess.java_pojo_generator;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-
 import com.xenoamess.java_pojo_generator.guess.AbstractClassGuess;
 import com.xenoamess.java_pojo_generator.guess.ClassGuessManager;
 import com.xenoamess.java_pojo_generator.guess.FieldGuess;
 import com.xenoamess.java_pojo_generator.guess.GuessClassGuess;
 import com.xenoamess.java_pojo_generator.guess.JavaClassGuess;
 import com.xenoamess.java_pojo_generator.guess.ListClassGuess;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import static com.xenoamess.java_pojo_generator.util.FindJavaClassCommonParentUtil.lowestCommonSuperclasses;
 
 /**
