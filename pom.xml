@@ -68,7 +68,7 @@
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-codec.version>1.15</commons-codec.version>
         <bson.version>4.3.0-beta1</bson.version>
-        <spring-data-mongodb.version>3.1.7</spring-data-mongodb.version>
+        <spring-data-mongodb.version>3.2.0</spring-data-mongodb.version>
     </properties>
 
     <profiles>
