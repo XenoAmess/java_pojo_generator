@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.xenoamess</groupId>
     <artifactId>java_pojo_generator</artifactId>
-    <version>0.2.1-SNAPSHOT</version>
+    <version>0.2.1</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <description>pojo generator for java, from HashMaps, like mongoDb Document.
@@ -261,6 +261,19 @@
 
         <plugins>
             <plugin>
+                <groupId>io.takari</groupId>
+                <artifactId>maven</artifactId>
+                <version>0.7.7</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>wrapper</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>${maven-dependency-plugin.version}</version>
@@ -486,9 +499,5 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/
             </url>
         </repository>
-        <!--        <repository>-->
-        <!--            <id>com.xenoamess</id>-->
-        <!--            <url>http://xenoamess.com:8081/repository/maven-releases/</url>-->
-        <!--        </repository>-->
     </distributionManagement>
 </project>
