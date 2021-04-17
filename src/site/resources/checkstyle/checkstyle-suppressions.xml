@@ -24,4 +24,6 @@ limitations under the License.
     <suppress checks="RedundantModifier" files="ConstructorUtilsTest" lines="0-99999"/>
     <!-- Windows-only workaround -->
     <suppress checks="NewlineAtEndOfFile" files="target[/\\]maven-archiver[/\\]pom.properties"/>
+    <!-- exclude generated-->
+    <suppress checks=".*" files="src[/\\]test[/\\]java[/\\]generated[/\\].*"/>
 </suppressions>

@@ -132,6 +132,36 @@ public class JavaFilesBaker {
                         .append(fieldGuess.getFiledName())
                         .append("\")\n");
             }
+            if (javaCodeBakeProperties.isIfJackson()) {
+                stringBuilderBody
+                        .append("    ")
+                        .append("@")
+                        .append(
+                                registerClassName(
+                                        "com.fasterxml.jackson.annotation.JsonProperty",
+                                        javaCodeBakeProperties,
+                                        imports
+                                )
+                        )
+                        .append("(\"")
+                        .append(fieldGuess.getFiledName())
+                        .append("\")\n");
+            }
+            if (javaCodeBakeProperties.isIfFastJson()) {
+                stringBuilderBody
+                        .append("    ")
+                        .append("@")
+                        .append(
+                                registerClassName(
+                                        "com.alibaba.fastjson.annotation.JSONField",
+                                        javaCodeBakeProperties,
+                                        imports
+                                )
+                        )
+                        .append("(name=\"")
+                        .append(fieldGuess.getFiledName())
+                        .append("\")\n");
+            }
             AbstractClassGuess fieldClass = fieldGuess.getFieldClass();
             if (javaCodeBakeProperties.isIfSpringData() && javaCodeBakeProperties.isIfMongoDb()) {
                 if (StringUtils.equals("_id", fieldGuess.getFiledName())) {
