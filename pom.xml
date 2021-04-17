@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.xenoamess</groupId>
     <artifactId>java_pojo_generator</artifactId>
-    <version>0.2.2-SNAPSHOT</version>
+    <version>0.3.0</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <description>pojo generator for java, from HashMaps, like mongoDb Document.
