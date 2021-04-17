@@ -1,3 +1,4 @@
+
 import com.xenoamess.java_pojo_generator.GuessClassGuessGenerator;
 import com.xenoamess.java_pojo_generator.JavaCodeBakeProperties;
 import com.xenoamess.java_pojo_generator.JavaFilesBaker;
@@ -8,17 +9,23 @@ import java.util.HashMap;
 import java.util.Map;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.annotation.Id;
 
 @org.springframework.data.mongodb.core.mapping.Document
 public class BasicTest {
 
     @org.springframework.data.mongodb.core.mapping.Field("a_a")
-    @Id
+    @org.springframework.data.annotation.Id
+    @com.fasterxml.jackson.annotation.JsonProperty("a_a")
+    @com.alibaba.fastjson.annotation.JSONField(name = "a_a")
     private Integer a;
 
     @Test
     public void basicTest() {
+
+        JavaCodeBakeProperties properties = new JavaCodeBakeProperties();
+
+        properties.setOutputFolder("src/test/java");
+
         Map<String, Object> hashMap = new HashMap<>();
         hashMap.put("a_a", "a_a");
         hashMap.put("i", new ObjectId());
@@ -39,7 +46,6 @@ public class BasicTest {
                 Collections.singletonList(hashMap)
         );
 
-        JavaCodeBakeProperties properties = new JavaCodeBakeProperties();
         new JavaFilesBaker()
                 .bake(
                         generatedClass,
@@ -47,7 +53,7 @@ public class BasicTest {
                 );
 
         properties.setIfBeautify(false);
-        properties.setPackageName("demo2");
+        properties.setPackageName("generated.demo2");
 
         new JavaFilesBaker()
                 .bake(
@@ -56,7 +62,7 @@ public class BasicTest {
                 );
 
         properties.setIfBeautify(true);
-        properties.setPackageName("demo3");
+        properties.setPackageName("generated.demo3");
 
         GuessClassGuess generatedClass2 = new GuessClassGuessGenerator().generate(
                 "table_name2",
@@ -66,6 +72,15 @@ public class BasicTest {
         new JavaFilesBaker()
                 .bake(
                         generatedClass2,
+                        properties
+                );
+
+        properties.setIfUsingImports(true);
+        properties.setPackageName("generated.demo4");
+
+        new JavaFilesBaker()
+                .bake(
+                        generatedClass,
                         properties
                 );
 

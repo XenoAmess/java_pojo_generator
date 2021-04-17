@@ -8,6 +8,8 @@ public class JavaCodeBakeProperties {
     private boolean ifMarkLombokGenerated = true;
     private boolean ifMongoDb = true;
     private boolean ifSpringData = true;
+    private boolean ifJackson = true;
+    private boolean ifFastJson = false;
     private boolean ifUsingImports = false;
 
     public JavaCodeBakeProperties() {
@@ -80,5 +82,21 @@ public class JavaCodeBakeProperties {
 
     public void setIfMarkLombokGenerated(boolean ifMarkLombokGenerated) {
         this.ifMarkLombokGenerated = ifMarkLombokGenerated;
+    }
+
+    public boolean isIfJackson() {
+        return ifJackson;
+    }
+
+    public void setIfJackson(boolean ifJackson) {
+        this.ifJackson = ifJackson;
+    }
+
+    public boolean isIfFastJson() {
+        return ifFastJson;
+    }
+
+    public void setIfFastJson(boolean ifFastJson) {
+        this.ifFastJson = ifFastJson;
     }
 }
