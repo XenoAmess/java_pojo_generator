@@ -6,6 +6,7 @@ import com.xenoamess.java_pojo_generator.guess.GuessClassGuess;
 import com.xenoamess.java_pojo_generator.guess.JavaClassGuess;
 import com.xenoamess.java_pojo_generator.guess.ListClassGuess;
 import com.xenoamess.java_pojo_generator.util.CaseUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -14,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
@@ -184,6 +186,7 @@ public class JavaFilesBaker {
                     .append(
                             registerClassName(
                                     getFieldClassName(
+                                            className,
                                             fieldGuess,
                                             javaCodeBakeProperties,
                                             imports
@@ -199,15 +202,38 @@ public class JavaFilesBaker {
             if (fieldClass instanceof ListClassGuess) {
                 AbstractClassGuess childClassGuess = ((ListClassGuess) fieldClass).getKeyClassGuess();
                 if (childClassGuess instanceof GuessClassGuess) {
+                    final String childClassName;
+                    if (javaCodeBakeProperties.isIfUsingAddOverlayName()) {
+                        childClassName = className + CaseUtils.toCamelCase(
+                                fieldName,
+                                true,
+                                ' ', '\t', '_', '.', '-'
+                        ) + "Dto";
+                    } else {
+                        childClassName = ((GuessClassGuess) childClassGuess).getClassName();
+                    }
                     nextGuessClassGuesses.put(
-                            ((GuessClassGuess) childClassGuess).getClassName(),
+                            childClassName,
                             (GuessClassGuess) childClassGuess
                     );
                 }
             }
 
             if (fieldClass instanceof GuessClassGuess) {
-                nextGuessClassGuesses.put(fieldName, (GuessClassGuess) fieldClass);
+                final String childClassName;
+                if (javaCodeBakeProperties.isIfUsingAddOverlayName()) {
+                    childClassName = className + CaseUtils.toCamelCase(
+                            fieldName,
+                            true,
+                            ' ', '\t', '_', '.', '-'
+                    ) + "Dto";
+                } else {
+                    childClassName = fieldName;
+                }
+                nextGuessClassGuesses.put(
+                        childClassName,
+                        (GuessClassGuess) fieldClass
+                );
             }
         }
 
@@ -274,15 +300,25 @@ public class JavaFilesBaker {
         if (classGuess instanceof ListClassGuess) {
 
             AbstractClassGuess childClassGuess = ((ListClassGuess) classGuess).getKeyClassGuess();
+            String innerClassName;
+            if (givenClassName != null) {
+                innerClassName = CaseUtils.toCamelCase(
+                        givenClassName,
+                        true,
+                        ' ', '\t', '_', '.', '-'
+                );
+            } else {
+                innerClassName = getClassName(
+                        null,
+                        childClassGuess,
+                        javaCodeBakeProperties,
+                        imports
+                );
+            }
             return ((JavaClassGuess<?>) classGuess).getRealClass().getCanonicalName()
                     + "<" +
                     registerClassName(
-                            getClassName(
-                                    null,
-                                    childClassGuess,
-                                    javaCodeBakeProperties,
-                                    imports
-                            ),
+                            innerClassName,
                             javaCodeBakeProperties,
                             imports
                     )
@@ -336,6 +372,7 @@ public class JavaFilesBaker {
 
     @NotNull
     private String getFieldClassName(
+            @NotNull String className,
             @NotNull FieldGuess fieldGuess,
             @NotNull JavaCodeBakeProperties javaCodeBakeProperties,
             @NotNull LinkedHashSet<String> imports
@@ -347,7 +384,17 @@ public class JavaFilesBaker {
         }
 
         if (classGuess instanceof ListClassGuess) {
-            return getClassName(null, classGuess, javaCodeBakeProperties, imports);
+            final String childClassName;
+            if (javaCodeBakeProperties.isIfUsingAddOverlayName()) {
+                childClassName = className + CaseUtils.toCamelCase(
+                        fieldGuess.getFiledName(),
+                        true,
+                        ' ', '\t', '_', '.', '-'
+                ) + "Dto";
+            } else {
+                childClassName = null;
+            }
+            return getClassName(childClassName, classGuess, javaCodeBakeProperties, imports);
         }
 
         if (classGuess instanceof JavaClassGuess) {
@@ -355,10 +402,20 @@ public class JavaFilesBaker {
         }
 
         if (classGuess instanceof GuessClassGuess) {
+            final String childClassName;
+            if (javaCodeBakeProperties.isIfUsingAddOverlayName()) {
+                childClassName = className + CaseUtils.toCamelCase(
+                        fieldGuess.getFiledName(),
+                        true,
+                        ' ', '\t', '_', '.', '-'
+                ) + "Dto";
+            } else {
+                childClassName = fieldGuess.getFiledName();
+            }
             return javaCodeBakeProperties.getPackageName()
                     + "."
                     + getClassName(
-                    fieldGuess.getFiledName(),
+                    childClassName,
                     classGuess,
                     javaCodeBakeProperties,
                     imports
