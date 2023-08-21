@@ -11,6 +11,7 @@ public class JavaCodeBakeProperties {
     private boolean ifJackson = true;
     private boolean ifFastJson = false;
     private boolean ifUsingImports = false;
+    private boolean ifUsingAddOverlayName = false;
 
     public JavaCodeBakeProperties() {
     }
@@ -99,4 +100,13 @@ public class JavaCodeBakeProperties {
     public void setIfFastJson(boolean ifFastJson) {
         this.ifFastJson = ifFastJson;
     }
+
+    public boolean isIfUsingAddOverlayName() {
+        return ifUsingAddOverlayName;
+    }
+
+    public void setIfUsingAddOverlayName(boolean ifUsingAddOverlayName) {
+        this.ifUsingAddOverlayName = ifUsingAddOverlayName;
+    }
+
 }
