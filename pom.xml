@@ -44,7 +44,7 @@
         <!--libraries versions-->
         <commons-lang3>3.18.0</commons-lang3>
         <annotations.version>26.0.2-1</annotations.version>
-        <lombok.version>1.18.40</lombok.version>
+        <lombok.version>1.18.42</lombok.version>
         <lombok-maven-plugin.version>1.18.20.0</lombok-maven-plugin.version>
         <commons-io.version>2.20.0</commons-io.version>
         <jackson.version>2.20</jackson.version>
