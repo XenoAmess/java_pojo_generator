@@ -21,8 +21,11 @@ jobs:
       - name: Check if auto-merge applicable
         id: check
         run: |
-          if [[ "${{ steps.meta.outputs.update-type }}" == "version-update:semver-patch" ]] || \
-             [[ "${{ steps.meta.outputs.update-type }}" == "version-update:semver-minor" ]]; then
+          TYPE="${{ steps.meta.outputs.update-type }}"
+          REF="${{ github.event.pull_request.head.ref }}"
+          if [[ "$TYPE" == "version-update:semver-patch" ]] || \
+             [[ "$TYPE" == "version-update:semver-minor" ]] || \
+             { [[ "$TYPE" == "version-update:semver-major" ]] && [[ "$REF" == dependabot/github_actions/* ]]; }; then
             echo "should_merge=true" >> $GITHUB_OUTPUT
           else
             echo "should_merge=false" >> $GITHUB_OUTPUT
