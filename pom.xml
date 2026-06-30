@@ -45,7 +45,6 @@
         <commons-lang3>3.20.0</commons-lang3>
         <annotations.version>26.1.0</annotations.version>
         <lombok.version>1.18.46</lombok.version>
-        <lombok-maven-plugin.version>1.18.20.0</lombok-maven-plugin.version>
         <commons-io.version>2.22.0</commons-io.version>
         <jackson.version>2.22</jackson.version>
         <fastjson.version>2.0.62</fastjson.version>
@@ -450,43 +449,6 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok-maven-plugin</artifactId>
-                <version>${lombok-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>delombok</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>delombok</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirectory>${project.basedir}/src/main/java
-                            </sourceDirectory>
-                            <addOutputDirectory>false</addOutputDirectory>
-                            <outputDirectory>
-                                ${project.basedir}/target/delombok
-                            </outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>testDelombok</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>testDelombok</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirectory>${project.basedir}/src/test/java
-                            </sourceDirectory>
-                            <addOutputDirectory>false</addOutputDirectory>
-                            <outputDirectory>
-                                ${project.basedir}/target/testDelombok
-                            </outputDirectory>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
