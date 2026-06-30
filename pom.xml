@@ -80,6 +80,15 @@
 
     <profiles>
         <profile>
+            <id>jdk9plus</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <properties>
+                <maven.compiler.release>8</maven.compiler.release>
+            </properties>
+        </profile>
+        <profile>
             <id>ossrh</id>
             <!-- GPG mvn clean deploy -P release -Dgpg.passphrase=YourPassphase -->
             <build>
